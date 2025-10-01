@@ -164,4 +164,5 @@ logs/
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
-.com.apple.timemachine.donotpresent
+.com.apple.timemachine.donotpresentdata_backup*/
+data/
