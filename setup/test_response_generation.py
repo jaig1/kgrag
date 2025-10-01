@@ -12,7 +12,7 @@ from typing import Dict, List, Any
 import time
 
 # Add the source directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from retrieval.kg_enhanced_rag import KGEnhancedRAG
 from retrieval.response_generator import ResponseGenerator

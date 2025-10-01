@@ -1,226 +1,307 @@
-# KG-Enhanced RAG System
+# KG-Enhanced RAG System Setup Guide
 
-A Knowledge Graph-Enhanced Retrieval Augmented Generation system that combines vector databases with knowledge graphs for improved accuracy and explainability.
+Complete setup instructions for the Knowledge Graph-Enhanced Retrieval-Augmented Generation system.
 
-## 🚀 Quick Start
+## 🎯 Prerequisites
 
-### 1. Environment Setup
+- **Python 3.8+** (Check with `python --version`)
+- **OpenAI API Key** (Required for entity extraction and RAG functionality)
+- **8GB+ RAM** (Recommended for processing knowledge graphs)
+
+## 🚀 Quick Start (Automatic Setup)
+
+For a complete automated setup:
 
 ```bash
-# Clone or navigate to project directory
+# 1. Clone and navigate to project
 cd kgrag
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
+# 2. Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# OR: .venv\Scripts\activate  # Windows
 
-# Install dependencies
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# Set up environment variables
+# 4. Configure OpenAI API key
 cp .env.example .env
-# Edit .env file and add your OpenAI API key
+# Edit .env file and add: OPENAI_API_KEY=your_key_here
+
+# 5. Run complete setup
+python setup/complete_setup.py
+
+# 6. Launch application
+python -m streamlit run src/interface/demo_app.py
 ```
 
-### 2. Download Dataset
+## 🔧 Manual Setup (Step-by-Step)
+
+If you prefer manual control or need to troubleshoot:
+
+### Step 1: Environment Setup
 
 ```bash
-# Run the dataset loader
-python run_dataset_loader.py
+# Navigate to project directory
+cd kgrag
 
-# Or run directly
-python -m src.ingestion.dataset_loader
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# OR: .venv\Scripts\activate  # Windows
+
+# Install all dependencies
+pip install -r requirements.txt
+
+# Verify critical packages are installed
+pip show streamlit openai chromadb networkx plotly
 ```
 
-### 3. Process Documents
+### Step 2: Configure OpenAI API Key
 
 ```bash
-# Run the document processing pipeline
-python run_document_processor.py
+# Copy environment template
+cp .env.example .env
 
-# Or run directly
-python -m src.ingestion.processor
+# Add your OpenAI API key (REQUIRED)
+echo "OPENAI_API_KEY=your_actual_api_key_here" >> .env
+# OR edit .env file manually with a text editor
 ```
 
-### 4. Explore Data
+⚠️ **CRITICAL**: Replace `your_actual_api_key_here` with your real OpenAI API key.
+
+### Step 3: Validate Environment
 
 ```bash
-# Launch Jupyter and open the exploration notebook
-jupyter notebook notebooks/01_data_exploration.ipynb
+# Verify project structure and dependencies
+python setup/verify_environment_setup.py
 ```
 
-### 5. Validate Implementation
+**Expected Result**: `5/5 validations passed` ✅
+
+### Step 4: Download BBC Dataset  
 
 ```bash
-# Run Phase 1 validation
-python validate_phase1.py
-
-# Run Phase 2 validation
-python validate_phase2.py
+# Download and prepare 50 BBC News articles
+python setup/setup_bbc_dataset.py
 ```
 
-## 📁 Project Structure
+**Expected Result**: 
+- ✅ Creates `data/raw/bbc_news_subset.json` (50 articles, ~125KB)
+- ✅ Shows "Successfully processed BBC News dataset!"
 
-```
-kgrag/
-├── src/                          # Source code
-│   ├── __init__.py
-│   ├── config.py                 # Configuration management
-│   ├── ingestion/                # Data ingestion module
-│   │   ├── __init__.py
-│   │   ├── dataset_loader.py     # BBC News dataset loader
-│   │   ├── preprocessor.py       # Text preprocessing and cleaning
-│   │   ├── chunker.py            # Document chunking with overlaps
-│   │   └── processor.py          # Complete processing pipeline
-│   ├── storage/                  # Vector DB and KG storage
-│   │   └── __init__.py
-│   ├── retrieval/                # Query processing and retrieval
-│   │   └── __init__.py
-│   ├── evaluation/               # System evaluation
-│   │   └── __init__.py
-│   └── interface/                # User interface components
-│       └── __init__.py
-├── data/                         # Data storage
-│   ├── raw/                      # Raw datasets
-│   └── processed/                # Processed data and indices
-├── notebooks/                    # Jupyter notebooks
-│   └── 01_data_exploration.ipynb # Data exploration notebook
-├── tests/                        # Test suite
-│   └── __init__.py
-├── requirements.txt              # Python dependencies
-├── .env.example                  # Environment variables template
-├── .gitignore                    # Git ignore rules
-├── run_dataset_loader.py         # Dataset loader runner script
-├── run_document_processor.py     # Document processor runner script  
-├── validate_phase1.py            # Phase 1 validation script
-├── validate_phase2.py            # Phase 2 validation script
-└── README.md                     # This file
-```
-
-## 🛠 Tech Stack
-
-- **Python 3.8+** - Core language
-- **ChromaDB** - Vector database for embeddings
-- **NetworkX** - Knowledge graph construction and analysis
-- **OpenAI API** - Embeddings and text generation
-- **Datasets (HuggingFace)** - BBC News dataset access
-- **Streamlit** - Web interface (future phases)
-- **Jupyter** - Interactive development and exploration
-
-## 📊 Dataset
-
-The system uses the BBC News dataset from HuggingFace (`SetFit/bbc-news`):
-- **50 articles total** (10 per category)
-- **5 categories**: business, entertainment, politics, sport, tech
-- **Balanced distribution** for fair evaluation
-- **Unique article IDs** in format: `bbc_{category}_{index}`
-
-## ⚙️ Configuration
-
-Configuration is managed through environment variables and `src/config.py`:
-
-### Key Parameters
-- `OPENAI_API_KEY`: Your OpenAI API key (required)
-- `EMBEDDING_MODEL`: OpenAI embedding model (default: text-embedding-3-small)
-- `CHAT_MODEL`: OpenAI chat model (default: gpt-4-turbo-preview)
-- `CHUNK_SIZE`: Text chunk size in characters (default: 800)
-- `CHUNK_OVERLAP`: Overlap between chunks (default: 100)
-- `TOP_K_RESULTS`: Number of top results to retrieve (default: 5)
-
-## 🔧 Development Phases
-
-### Phase 1: Environment Setup & Data Acquisition ✅
-- [x] Project structure creation
-- [x] Dependency management
-- [x] Configuration system
-- [x] Dataset download and processing
-- [x] Data exploration notebook
-
-### Phase 2: Document Processing & Chunking ✅
-- [x] Text preprocessing and normalization
-- [x] Sentence-aware chunking with overlaps
-- [x] Document processing pipeline
-- [x] Chunk metadata and statistics
-
-### Phase 3: Vector Database Implementation (Next)
-- [ ] ChromaDB setup and configuration
-- [ ] Embedding generation and storage
-- [ ] Vector similarity search
-- [ ] Chunk indexing and retrieval
-
-### Phase 3: Knowledge Graph Construction (Future)
-- [ ] Entity extraction and linking
-- [ ] Relationship identification
-- [ ] Graph storage and querying
-- [ ] Graph visualization
-
-### Phase 4: Enhanced Retrieval System (Future)
-- [ ] Hybrid vector + graph search
-- [ ] Query understanding and expansion
-- [ ] Result ranking and fusion
-- [ ] Context-aware retrieval
-
-### Phase 5: Generation & Interface (Future)
-- [ ] Response generation with context
-- [ ] Explanation generation
-- [ ] Streamlit web interface
-- [ ] Evaluation metrics
-
-## 📝 Usage Examples
-
-### Load and Process Dataset
-```python
-from src.ingestion.dataset_loader import BBCDatasetLoader
-
-# Initialize loader
-loader = BBCDatasetLoader()
-
-# Download and process
-loader.download_dataset()
-loader.create_balanced_subset()
-loader.save_subset()
-
-# View statistics
-loader.display_statistics()
-```
-
-### Configuration Access
-```python
-from src.config import config
-
-print(f"Embedding model: {config.EMBEDDING_MODEL}")
-print(f"Dataset size: {config.DATASET_SIZE}")
-print(f"Output path: {config.get_bbc_subset_path()}")
-```
-
-## 🧪 Testing
+### Step 5: Process Documents into Chunks
 
 ```bash
-# Run all tests (when available)
-python -m pytest tests/
-
-# Run specific test module
-python -m pytest tests/test_dataset_loader.py
+# Process articles into searchable chunks  
+python setup/setup_vector_database.py
 ```
 
-## 📚 Dependencies
+**Expected Result**:
+- ✅ Creates `data/processed/processed_articles.json` (169 chunks, ~500KB)
+- ✅ Shows "Processing pipeline completed successfully!"
 
-Key packages and their purposes:
-- `openai>=1.12.0` - OpenAI API access
-- `chromadb>=0.4.22` - Vector database
-- `networkx>=3.2.1` - Knowledge graph operations
-- `datasets>=2.16.1` - HuggingFace datasets
-- `pandas>=2.1.4` - Data manipulation
-- `plotly>=5.17.0` - Interactive visualizations
-- `streamlit>=1.31.1` - Web interface
-- `spacy>=3.7.2` - NLP processing
+### Step 6: Create Vector Database
 
-## 🤝 Contributing
+```bash
+# Generate embeddings and populate ChromaDB
+python setup/setup_vector_store.py
+```
 
-1. Ensure all dependencies are installed
-2. Follow PEP 8 style guidelines
-3. Add tests for new functionality
-4. Update documentation as needed
+**Expected Result**:
+- ✅ Creates `data/chroma_db/` directory (ChromaDB files)
+- ✅ Creates `data/processed/embeddings_cache.pkl`
+- ✅ Shows "Vector database populated with 169 documents"
+
+### Step 7: Build Knowledge Graph
+
+```bash
+# Extract entities and build knowledge graph (takes 2-5 minutes)
+python setup/setup_knowledge_graph.py
+```
+
+**Expected Result**:
+- ✅ Creates `data/processed/knowledge_graph.pkl` (~145KB, 1000+ nodes)
+- ✅ Creates `data/processed/extracted_entities.json` (~100KB)
+- ✅ Creates `data/processed/resolved_entities.json` (~165KB)
+- ✅ Shows "Phase 3 Complete! Knowledge graph ready"
+
+### Step 8: Verify Complete Setup
+
+```bash
+# Verify all critical files exist
+python -c "
+import os
+files = [
+    'data/raw/bbc_news_subset.json',
+    'data/processed/processed_articles.json', 
+    'data/processed/knowledge_graph.pkl',
+    'data/processed/extracted_entities.json',
+    'data/chroma_db'
+]
+missing = [f for f in files if not os.path.exists(f)]
+if missing:
+    print('❌ Missing files:', missing)
+    exit(1)
+else:
+    print('✅ All required files present!')
+    print('🎉 Setup complete - ready to launch app!')
+"
+```
+
+**Expected Result**: `✅ All required files present!` and `🎉 Setup complete`
+
+## 🚀 **Quick Setup (One Command)**
+
+For a complete fresh setup, run the master setup script:
+
+```bash
+# Activate virtual environment and create directories first
+source .venv/bin/activate
+python setup/setup_bbc_dataset.py
+python setup/complete_setup.py
+```
+
+This will automatically run all setup steps in the correct order and validate the system.
+
+## 🧪 System Validation (Critical Before Launch)
+
+**IMPORTANT**: Test both systems to ensure Streamlit app will work:
+
+### Test 1: Baseline RAG System
+```bash
+source .venv/bin/activate
+python setup/test_baseline_rag.py
+```
+**Expected Result**: `✅ Baseline RAG testing complete!` with 100% success rate
+
+### Test 2: KG-Enhanced RAG System  
+```bash
+source .venv/bin/activate
+python setup/test_kg_enhanced_rag.py
+```
+**Expected Result**: `🎉 SCRIPT 5 (KG-ENHANCED RAG) VALIDATION: ✅ PASSED`
+
+### Test 3: Knowledge Graph Operations
+```bash
+source .venv/bin/activate
+python setup/test_graph_traversal.py
+```
+**Expected Result**: `🎉 SCRIPT 2 (GRAPH TRAVERSAL) VALIDATION: ✅ PASSED`
+
+## � Launch Streamlit Application
+
+Once all tests pass, launch the app:
+
+```bash
+# Activate virtual environment first
+source .venv/bin/activate
+
+# Then launch Streamlit (recommended)
+python -m streamlit run src/interface/demo_app.py
+
+# Alternative: Use full path (if activation doesn't work)
+.venv/bin/python -m streamlit run src/interface/demo_app.py
+```
+
+**Expected Result**: 
+- ✅ App starts on `http://localhost:8501`
+- ✅ No import errors or missing files
+- ✅ All 4 app modes load successfully:
+  - Baseline RAG
+  - KG-Enhanced RAG  
+  - Side-by-Side Comparison
+  - KG Visualizer
+
+## � Troubleshooting
+
+### Common Issues & Solutions
+
+**❌ Error: "No module named 'openai'" or similar**
+```bash
+# Ensure virtual environment is activated and dependencies installed
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**❌ Error: "OpenAI API key not found"** 
+```bash
+# Verify API key is configured
+cat .env | grep OPENAI_API_KEY
+# Should show: OPENAI_API_KEY=sk-...
+```
+
+**❌ Error: "FileNotFoundError: data/processed/knowledge_graph.pkl"**
+```bash
+# Rerun knowledge graph construction
+source .venv/bin/activate
+python setup/setup_knowledge_graph.py
+```
+
+**❌ Error: "ChromaDB collection not found" or "0 documents"**
+```bash
+# Rerun vector database population
+source .venv/bin/activate
+python setup/setup_vector_store.py
+```
+
+**❌ Streamlit app fails to start or shows errors**
+```bash
+# Test individual systems first
+source .venv/bin/activate
+python setup/test_baseline_rag.py
+python setup/test_kg_enhanced_rag.py
+# All tests should show ✅ PASSED
+```
+
+**❌ Port 8501 already in use**
+```bash
+# Use different port
+python -m streamlit run src/interface/demo_app.py --server.port=8502
+```
+
+### Performance Notes
+- **Setup time**: 5-10 minutes total (depends on OpenAI API speed)
+- **Baseline RAG**: ~3-8 seconds per query  
+- **KG-Enhanced RAG**: ~4-12 seconds per query
+- **Memory usage**: ~2-4GB during operation
+
+## ✅ Setup Summary
+
+### Quick Setup (Recommended)
+```bash
+source .venv/bin/activate
+python setup/setup_bbc_dataset.py
+python setup/complete_setup.py
+python -m streamlit run src/interface/demo_app.py
+```
+
+### Manual Setup Order  
+```bash
+# 1. Activate virtual environment first
+source .venv/bin/activate
+
+# 2. Create data directories (must be first!)
+python setup/setup_bbc_dataset.py          # Download 50 BBC articles
+
+# 3. Run remaining setup steps
+python setup/verify_environment_setup.py   # Verify dependencies (5/5 pass)
+python setup/setup_vector_database.py      # Process into 169 chunks
+python setup/setup_vector_store.py         # Populate ChromaDB with embeddings
+python setup/setup_knowledge_graph.py      # Build 1,000+ node knowledge graph
+python setup/test_baseline_rag.py          # Test baseline system (100% success)
+python setup/test_kg_enhanced_rag.py       # Test enhanced system (100% success)
+python -m streamlit run src/interface/demo_app.py  # Launch app
+```
+
+### Expected Final State
+- ✅ `data/raw/bbc_news_subset.json` (50 articles, ~125KB)
+- ✅ `data/processed/processed_articles.json` (169 chunks, ~500KB)  
+- ✅ `data/chroma_db/` (vector database)
+- ✅ `data/processed/knowledge_graph.pkl` (1,000+ nodes, ~145KB)
+- ✅ App accessible at `http://localhost:8501` with 4 working modes
+
+**Total setup time: 5-10 minutes**
 
 ## 📄 License
 

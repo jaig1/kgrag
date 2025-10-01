@@ -11,8 +11,10 @@ from pathlib import Path
 import importlib.util
 
 # Add src to Python path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 src_path = project_root / "src"
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(src_path))
 sys.path.insert(0, str(src_path))
 
 def validate_project_structure():
@@ -28,7 +30,7 @@ def validate_project_structure():
     required_files = [
         "requirements.txt", ".env.example", ".gitignore", "README.md",
         "src/__init__.py", "src/config.py", "src/ingestion/__init__.py",
-        "src/ingestion/dataset_loader.py", "run_dataset_loader.py",
+        "src/ingestion/dataset_loader.py", "setup/setup_bbc_dataset.py",
         "notebooks/01_data_exploration.ipynb"
     ]
     

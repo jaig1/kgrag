@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Add project root to path for imports
-project_root = Path(__file__).parent.parent.parent
+project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from src.config import Config
@@ -297,11 +297,13 @@ def main(test_mode: bool = True):
 
 if __name__ == "__main__":
     import sys
-    # Check if we should run in full mode
-    test_mode = True
-    if len(sys.argv) > 1 and sys.argv[1] == '--full':
-        test_mode = False
-        print("⚠️  Full mode requested - will process all 50 articles")
+    # Run in full mode by default for setup, test mode with --test flag
+    test_mode = False
+    if len(sys.argv) > 1 and sys.argv[1] == '--test':
+        test_mode = True
+        print("🧪 Test mode requested - will process only 1 article")
+    else:
+        print("🚀 Full mode - will process all 50 articles")
     
     success = main(test_mode)
     sys.exit(0 if success else 1)

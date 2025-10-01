@@ -11,8 +11,10 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 # Add src to Python path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 src_path = project_root / "src"
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(src_path))
 sys.path.insert(0, str(src_path))
 
 from src.config import config
