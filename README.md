@@ -4,16 +4,26 @@ Complete setup instructions for the Knowledge Graph-Enhanced Retrieval-Augmented
 
 ## 🎯 Prerequisites
 
-- **Python 3.8+** (Check with `python --version`)
+### 🖥️ **System Requirements**
+- **Python 3.8+** (Check with `python --version` or `python3 --version`)  
+- **Operating System**: macOS, Linux, or Windows 10/11
+- **Memory**: 8GB+ RAM recommended (4GB minimum)
+- **Disk Space**: 1GB available (including dependencies and data)
+- **Internet**: Required for dataset download and OpenAI API calls
+
+### 🔑 **Required API Access**
 - **OpenAI API Key** (Required for entity extraction and RAG functionality)
-- **8GB+ RAM** (Recommended for processing knowledge graphs)
+  - Get your key at [platform.openai.com](https://platform.openai.com/api-keys)  
+  - Ensure you have usage credits (setup costs ~$1-3 USD)
+  - Key should start with `sk-` and be ~51 characters long
 
 ## 🚀 Quick Start (Automatic Setup)
 
 For a complete automated setup:
 
 ```bash
-# 1. Clone and navigate to project
+# 1. Clone repository and navigate to project
+git clone https://github.com/jaig1/kgrag.git
 cd kgrag
 
 # 2. Create virtual environment
@@ -50,8 +60,14 @@ python3 -m venv .venv
 source .venv/bin/activate  # macOS/Linux
 # OR: .venv\Scripts\activate  # Windows
 
-# Install all dependencies
+# Upgrade pip first (recommended)
+pip install --upgrade pip
+
+# Install all dependencies  
 pip install -r requirements.txt
+
+# Optional: Install spaCy language model for enhanced NLP
+python -m spacy download en_core_web_sm
 
 # Verify critical packages are installed
 pip show streamlit openai chromadb networkx plotly
@@ -260,11 +276,111 @@ python setup/test_kg_enhanced_rag.py
 python -m streamlit run src/interface/demo_app.py --server.port=8502
 ```
 
+**❌ Git clone fails or repository not found**
+```bash
+# Ensure git is installed
+git --version
+
+# Try HTTPS clone (recommended)
+git clone https://github.com/jaig1/kgrag.git
+
+# Alternative: Download ZIP from GitHub
+# Visit: https://github.com/jaig1/kgrag/archive/refs/heads/main.zip
+```
+
+**❌ Python version issues**  
+```bash
+# Check available Python versions
+python --version
+python3 --version
+
+# Use python3 if python is too old
+python3 -m venv .venv
+python3 -m pip install -r requirements.txt
+```
+
+**❌ Virtual environment activation fails**
+```bash
+# macOS/Linux:
+source .venv/bin/activate
+
+# Windows Command Prompt:
+.venv\Scripts\activate.bat
+
+# Windows PowerShell:  
+.venv\Scripts\Activate.ps1
+
+# Verify activation (should show (.venv) in prompt)
+```
+
+**❌ Permission denied errors (macOS/Linux)**
+```bash
+# Fix script permissions
+chmod +x setup/*.py
+
+# Or run with python explicitly  
+python setup/setup_bbc_dataset.py
+```
+
 ### Performance Notes
 - **Setup time**: 5-10 minutes total (depends on OpenAI API speed)
 - **Baseline RAG**: ~3-8 seconds per query  
 - **KG-Enhanced RAG**: ~4-12 seconds per query
 - **Memory usage**: ~2-4GB during operation
+
+## 📊 What Gets Created During Setup
+
+After successful setup, your project structure will be:
+
+```
+kgrag/
+├── .env                            # Your API keys (keep private!)
+├── .venv/                          # Virtual environment
+├── data/
+│   ├── raw/
+│   │   └── bbc_news_subset.json    # 50 BBC articles (~125KB)
+│   ├── processed/
+│   │   ├── processed_articles.json  # 169 document chunks (~500KB)
+│   │   ├── knowledge_graph.pkl     # 1,000+ node graph (~145KB)
+│   │   ├── extracted_entities.json # Raw entities (~100KB)
+│   │   └── resolved_entities.json  # Clean entities (~165KB)
+│   ├── chroma_db/                  # Vector database files
+│   └── logs/                       # Query logs and statistics
+├── setup/                          # All setup scripts (15 files)
+└── src/                           # Source code modules
+    ├── config.py                   # Configuration management
+    ├── ingestion/                  # Data processing pipeline
+    ├── retrieval/                  # RAG systems (baseline & KG-enhanced)
+    └── interface/                  # Streamlit web application
+```
+
+**Total Size**: ~50MB including dependencies and data
+
+## 🎉 Success Indicators
+
+You'll know setup worked when you see:
+
+### ✅ **Environment Setup Success**
+- Virtual environment activated (prompt shows `(.venv)`)
+- No errors during `pip install -r requirements.txt`
+- `.env` file contains valid OpenAI API key (starts with `sk-`)
+
+### ✅ **Data Processing Success**
+- BBC dataset: `✅ Successfully processed BBC News dataset!`
+- Document processing: `✅ Processing pipeline completed successfully!`
+- Vector database: `✅ Vector database populated with 169 documents`
+- Knowledge graph: `✅ Phase 3 Complete! Knowledge graph ready`
+
+### ✅ **System Validation Success**
+- Environment check: `✅ 5/5 validations passed`
+- Baseline RAG: `✅ Baseline RAG testing complete!` (100% success rate)
+- KG-Enhanced RAG: `🎉 KG-ENHANCED RAG VALIDATION: ✅ PASSED`
+
+### ✅ **Streamlit App Success**
+- App loads at `http://localhost:8501` without errors
+- All 4 modes work: **Baseline RAG**, **KG-Enhanced RAG**, **Both (Compare)**, **KG Visualizer**
+- Can submit queries and receive relevant responses
+- KG Visualizer displays interactive graph with clickable nodes
 
 ## ✅ Setup Summary
 
