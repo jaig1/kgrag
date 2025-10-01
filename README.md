@@ -63,14 +63,17 @@ source .venv/bin/activate  # macOS/Linux
 # Upgrade pip first (recommended)
 pip install --upgrade pip
 
-# Install all dependencies  
+# Install all dependencies (now includes tiktoken and streamlit-plotly-events)
 pip install -r requirements.txt
 
-# Optional: Install spaCy language model for enhanced NLP
+# Install spaCy language model for enhanced NLP (REQUIRED)
 python -m spacy download en_core_web_sm
 
-# Verify critical packages are installed
-pip show streamlit openai chromadb networkx plotly
+# Verify all dependencies are installed correctly
+python setup/verify_dependencies.py
+
+# Alternative: Manual verification of critical packages
+pip show streamlit openai chromadb networkx plotly tiktoken streamlit-plotly-events
 ```
 
 ### Step 2: Configure OpenAI API Key

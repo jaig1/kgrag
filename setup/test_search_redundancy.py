@@ -6,10 +6,10 @@ Test to compare original vs expanded vector searches to see if original is redun
 import sys
 import os
 
-# Add the source directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+# Add the parent directory to the Python path to enable src imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from retrieval.hybrid_retriever import HybridRetriever
+from src.retrieval.hybrid_retriever import HybridRetriever
 
 
 def analyze_search_redundancy():
